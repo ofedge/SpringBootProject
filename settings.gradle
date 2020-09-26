@@ -1,0 +1,5 @@
+rootProject.name = 'springbootproject'
+include 'base'
+include 'app'
+include 'auth'
+

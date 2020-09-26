@@ -1,0 +1,9 @@
+archivesBaseName = 'app'
+
+jar.enabled=true
+bootJar.enabled=false
+
+dependencies {
+    implementation project(':base')
+    implementation project(':auth')
+}

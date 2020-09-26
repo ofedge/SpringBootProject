@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+app.lyd.springbootproject.base.advice.ExceptionAdvice

@@ -1,0 +1,19 @@
+server:
+  port: 20080
+  servlet:
+    context-path: /sbp
+spring:
+  datasource:
+    url: jdbc:h2:mem:sbp
+    username: sa
+    password:
+    # execute sql when start
+    schema: classpath:db/schema.sql
+    data: classpath:db/data.sql
+  h2:
+    console:
+      # when spring-boot-devtools is in dependency, it's enabled by default
+      enabled: true
+logging:
+  level:
+    app.lyd.springbootproject.app.dao.mapper: debug
