@@ -17,7 +17,7 @@ public class CacheConfig {
     @Bean(name = "sessionCacheManager")
     public CacheManager sessionCacheManager() {
         CaffeineCacheManager cacheManager = new CaffeineCacheManager();
-        Caffeine caffeine = Caffeine.newBuilder().expireAfterAccess(1, TimeUnit.MINUTES);
+        Caffeine caffeine = Caffeine.newBuilder().expireAfterAccess(1, TimeUnit.HOURS);
         cacheManager.setCaffeine(caffeine);
         return cacheManager;
     }
@@ -26,7 +26,7 @@ public class CacheConfig {
     @Primary
     public CacheManager cacheManager() {
         CaffeineCacheManager cacheManager = new CaffeineCacheManager();
-        Caffeine caffeine = Caffeine.newBuilder().expireAfterAccess(10, TimeUnit.MINUTES);
+        Caffeine caffeine = Caffeine.newBuilder().expireAfterAccess(24, TimeUnit.HOURS);
         cacheManager.setCaffeine(caffeine);
         return cacheManager;
     }

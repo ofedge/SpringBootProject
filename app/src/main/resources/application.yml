@@ -14,6 +14,9 @@ spring:
     console:
       # when spring-boot-devtools is in dependency, it's enabled by default
       enabled: true
+  messages:
+    basename: i18n.messages
+    encoding: UTF-8
 logging:
   level:
     app.lyd.springbootproject.app.dao.mapper: debug

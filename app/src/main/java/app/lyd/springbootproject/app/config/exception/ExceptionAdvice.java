@@ -1,5 +1,6 @@
-package app.lyd.springbootproject.base.advice;
+package app.lyd.springbootproject.app.config.exception;
 
+import app.lyd.springbootproject.app.consts.ErrorCode;
 import app.lyd.springbootproject.base.web.result.Result;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,9 +14,14 @@ public class ExceptionAdvice {
 
     private Logger logger = LoggerFactory.getLogger(ExceptionAdvice.class);
 
+    @ExceptionHandler(SbpException.class)
+    public Result handlerSbpException(SbpException sbpException) {
+        return new Result(sbpException.getErrorCode().getCode());
+    }
+
     @ExceptionHandler(Throwable.class)
     public Result handleThrowable(Throwable throwable) {
         logger.error(throwable.getMessage(), throwable);
-        return new Result(500, "Internal server error!");
+        return new Result(ErrorCode.SERVER_ERROR.getCode());
     }
 }

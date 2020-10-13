@@ -1,7 +1,6 @@
 package app.lyd.springbootproject.auth.interceptor;
 
 import app.lyd.springbootproject.auth.annotation.AuthIgnore;
-import app.lyd.springbootproject.auth.exception.TokenException;
 import app.lyd.springbootproject.auth.pojo.BaseUser;
 import app.lyd.springbootproject.auth.property.AuthProperty;
 import app.lyd.springbootproject.auth.service.BaseAuthorizationService;
@@ -35,15 +34,7 @@ public class AuthorizationInterceptor extends HandlerInterceptorAdapter {
             }
 
             String token = request.getHeader("Authorization");
-            if (token == null) {
-                throw new TokenException("Please sign in first!");
-            }
-            if (!token.startsWith("Bearer ")) {
-                throw new TokenException("Invalid token!");
-            }
-
-            token = token.replace("Bearer ", "");
-            BaseUser baseUser = authorizationService.parseToken(token);
+            BaseUser baseUser = authorizationService.parseBearerToken(token);
             // put user into request scope and get from the HandlerMethodArgumentResolver(need to be implement)
             request.setAttribute(AuthProperty.USER_REQUEST_KEY, baseUser);
             return true;

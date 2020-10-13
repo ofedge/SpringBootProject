@@ -1,5 +1,6 @@
 package app.lyd.springbootproject.base.web.result;
 
+import app.lyd.springbootproject.base.utils.MessageUtils;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import java.util.Objects;
@@ -13,7 +14,16 @@ public class Result<T> {
     private T data;
 
     public Result() {
-        this.code = 200;
+        this.code = 0;
+    }
+
+    /**
+     * use only when @EnableLocaleSwitch is used
+     * @param code
+     */
+    public Result(int code) {
+        this.code = code;
+        this.msg = MessageUtils.getErrorMsg(code);
     }
 
     public Result(int code, String msg) {
@@ -22,7 +32,7 @@ public class Result<T> {
     }
 
     public Result(T data) {
-        this.code = 200;
+        this.code = 0;
         this.data = data;
     }
 

@@ -14,5 +14,5 @@ public interface BaseAuthorizationService<T extends BaseUser> {
      * @param token
      * @return
      */
-    T  parseToken(String token);
+    T parseBearerToken(String token);
 }

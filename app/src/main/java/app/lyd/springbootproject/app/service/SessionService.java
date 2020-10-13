@@ -1,17 +1,19 @@
 package app.lyd.springbootproject.app.service;
 
+import app.lyd.springbootproject.app.config.exception.SbpException;
+import app.lyd.springbootproject.app.consts.ErrorCode;
 import app.lyd.springbootproject.app.dao.entity.UserInfo;
+import app.lyd.springbootproject.app.dao.entity.UserPassword;
 import app.lyd.springbootproject.app.dao.mapper.UserMapper;
 import app.lyd.springbootproject.app.dao.repository.AuthorityRepository;
 import app.lyd.springbootproject.app.dao.repository.RoleRepository;
 import app.lyd.springbootproject.app.dao.repository.SessionRepository;
 import app.lyd.springbootproject.app.web.req.LoginReq;
+import app.lyd.springbootproject.app.web.req.ModifyPasswordReq;
 import app.lyd.springbootproject.app.web.result.TokenUser;
-import app.lyd.springbootproject.auth.exception.TokenException;
 import app.lyd.springbootproject.auth.service.BaseAuthorizationService;
 import app.lyd.springbootproject.auth.utils.AuthUtils;
 import app.lyd.springbootproject.app.consts.UserActive;
-import app.lyd.springbootproject.auth.exception.AuthException;
 import io.jsonwebtoken.Claims;
 import org.springframework.stereotype.Service;
 
@@ -37,12 +39,12 @@ public class SessionService implements BaseAuthorizationService<TokenUser> {
 
     public TokenUser signIn(LoginReq req) {
         UserInfo userInfo = Optional.ofNullable(userMapper.findByUsername(req.getUsername()))
-                .orElseThrow(() -> new AuthException("Invalid username or password!"));
+                .orElseThrow(() -> new SbpException(ErrorCode.TOKEN_INVALID));
         if (!req.getPassword().equals(userInfo.getPassword())) {
-            throw new AuthException("Invalid username or password!");
+            throw new SbpException(ErrorCode.AUTH_INVALID);
         }
         if (!UserActive.ACTIVE.equals(userInfo.getActive())) {
-            throw new AuthException("The user has been locked!");
+            throw new SbpException(ErrorCode.AUTH_LOCKED);
         }
         Map<String, Object> payload = new HashMap<>();
         payload.put("userId", userInfo.getId());
@@ -62,27 +64,54 @@ public class SessionService implements BaseAuthorizationService<TokenUser> {
         tokenUser.setAuthorityList(authorityRepository.findByUserId(userInfo.getId()));
     }
 
+    public TokenUser buildTokenUser(TokenUser tokenUser) throws Exception {
+        Long loginTime = tokenUser.getLoginTime();
+        UserInfo userInfo = Optional.ofNullable(userMapper.findById(tokenUser.getUserId())).orElseThrow(() -> new SbpException(ErrorCode.TOKEN_INVALID));
+        tokenUser = new TokenUser(userInfo);
+        tokenUser.setLoginTime(loginTime);
+        this.setUserRoleAndAuthorities(userInfo, tokenUser.getToken(), tokenUser);
+        return tokenUser;
+    }
+
     public void signOut(TokenUser tokenUser) {
         sessionRepository.delete(tokenUser.getToken(), tokenUser.getUserId());
     }
 
     @Override
-    public TokenUser parseToken(String token) {
+    public TokenUser parseBearerToken(String token) {
         try {
+            if (token == null) {
+                throw new SbpException(ErrorCode.TOKEN_NOT_EXISTS);
+            }
+            if (!token.startsWith("Bearer ")) {
+                throw new SbpException(ErrorCode.TOKEN_INVALID);
+            }
+
+            token = token.replace("Bearer ", "");
             Claims claims = AuthUtils.verifyToken(token);
             Long userId = Optional.ofNullable(sessionRepository.load(token, new Long((Integer) claims.get("userId"))))
-                    .orElseThrow(() -> new TokenException("Token Expired!"));
+                    .orElseThrow(() -> new SbpException(ErrorCode.TOKEN_EXPIRED));
             Long loginTime = (Long) claims.get("loginTime");
-            UserInfo userInfo = Optional.ofNullable(userMapper.findById(new Long(userId))).orElseThrow(() -> new Exception());
-            TokenUser tokenUser = new TokenUser(userInfo);
+            TokenUser tokenUser = new TokenUser();
+            tokenUser.setUserId(userId);
+            tokenUser.setToken(token);
             tokenUser.setLoginTime(loginTime);
-            this.setUserRoleAndAuthorities(userInfo, token, tokenUser);
             return tokenUser;
-        } catch(TokenException e) {
-            throw new TokenException(e.getMessage());
+        } catch(SbpException e) {
+            throw new SbpException(e.getErrorCode());
         } catch (Exception e) {
             e.printStackTrace();
-            throw new TokenException("Invalid token!");
+            throw new SbpException(ErrorCode.TOKEN_INVALID);
         }
+    }
+
+    public void updatePassword(TokenUser tokenUser, ModifyPasswordReq req) {
+        UserPassword userPassword = userMapper.findUserPassById(tokenUser.getUserId());
+        if (!req.getOldPassword().equals(userPassword.getPassword())) {
+            throw new SbpException(ErrorCode.PASSWORD_OLD_WRONG);
+        }
+        userPassword.setPassword(req.getNewPassword());
+        userMapper.updatePassword(userPassword);
+        sessionRepository.delete(tokenUser.getUserId());
     }
 }

@@ -1,3 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-app.lyd.springbootproject.auth.config.AuthAutoConfig,\
-app.lyd.springbootproject.auth.advice.ExceptionAdvice
+app.lyd.springbootproject.auth.config.AuthAutoConfig

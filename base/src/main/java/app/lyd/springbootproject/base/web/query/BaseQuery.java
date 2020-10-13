@@ -1,15 +1,32 @@
 package app.lyd.springbootproject.base.web.query;
 
 public class BaseQuery {
-    private int page;
-    private int size;
 
-    public void setPage(int page) {
+    private Integer page;
+    private Integer size;
+    private String order;
+
+    public Integer getPage() {
+        return page;
+    }
+
+    public void setPage(Integer page) {
         this.page = page;
     }
 
-    public void setSize(int size) {
+    public Integer getSize() {
+        return size;
+    }
+
+    public void setSize(Integer size) {
         this.size = size;
     }
 
+    public String getOrder() {
+        return order;
+    }
+
+    public void setOrder(String order) {
+        this.order = order;
+    }
 }
