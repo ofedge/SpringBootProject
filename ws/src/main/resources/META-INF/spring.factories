@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+app.lyd.springbootproject.ws.config.WsMessageBrokerConfigurer,\
+  app.lyd.springbootproject.ws.config.WsConfiguration

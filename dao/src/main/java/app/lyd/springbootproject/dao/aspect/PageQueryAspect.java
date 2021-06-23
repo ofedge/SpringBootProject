@@ -1,6 +1,6 @@
 package app.lyd.springbootproject.dao.aspect;
 
-import app.lyd.springbootproject.base.web.query.BaseQuery;
+import app.lyd.springbootproject.dao.req.BaseQuery;
 import app.lyd.springbootproject.dao.annotation.PageQuery;
 import app.lyd.springbootproject.dao.util.PageUtil;
 import org.aspectj.lang.ProceedingJoinPoint;

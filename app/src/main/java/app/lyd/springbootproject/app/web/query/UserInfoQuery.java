@@ -1,7 +1,7 @@
 package app.lyd.springbootproject.app.web.query;
 
-import app.lyd.springbootproject.base.web.query.BaseBuilder;
-import app.lyd.springbootproject.base.web.query.BaseQuery;
+import app.lyd.springbootproject.dao.req.BaseBuilder;
+import app.lyd.springbootproject.dao.req.BaseQuery;
 
 import java.util.HashMap;
 import java.util.Map;

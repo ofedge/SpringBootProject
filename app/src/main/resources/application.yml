@@ -20,3 +20,14 @@ spring:
 logging:
   level:
     app.lyd.springbootproject.app.dao.mapper: debug
+spb:
+  ws:
+    endpoints: spb-ws
+    simple-brokers: /topic
+    destinations: /app
+    enable-cors: true
+    name-key: userId
+    heartbeat:
+      enable: true
+      pool-size: 10
+      period: 10000

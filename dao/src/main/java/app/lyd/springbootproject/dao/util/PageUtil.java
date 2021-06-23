@@ -1,6 +1,6 @@
 package app.lyd.springbootproject.dao.util;
 
-import app.lyd.springbootproject.base.web.query.BaseQuery;
+import app.lyd.springbootproject.dao.req.BaseQuery;
 import app.lyd.springbootproject.base.web.result.PageResult;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;

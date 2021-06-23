@@ -1,4 +1,4 @@
-package app.lyd.springbootproject.base.web.query;
+package app.lyd.springbootproject.dao.req;
 
 public class BaseQuery {
 

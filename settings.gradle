@@ -3,4 +3,5 @@ include 'base'
 include 'app'
 include 'auth'
 include 'dao'
+include 'ws'
 
